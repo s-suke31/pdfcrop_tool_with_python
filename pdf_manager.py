@@ -38,8 +38,8 @@ class PDFCropper():
         cb = crop_page.cropbox
         x0 = cb.x0 + coords[0]
         y0 = cb.y0 + coords[1]
-        x1 = cb.x0 + (coords[2] - coords[0])
-        y1 = cb.y0 + (coords[3] - coords[1])
+        x1 = x0 + (coords[2] - coords[0])
+        y1 = y0 + (coords[3] - coords[1])
         crop_page.set_cropbox(fitz.Rect(x0, y0, x1, y1))
 
     def notcrop(self, npage):
