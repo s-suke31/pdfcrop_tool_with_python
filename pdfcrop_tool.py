@@ -46,6 +46,7 @@ class SelectFile(ft.UserControl):
         super().__init__()
         self.master = master
         self.pdf_path = ""
+        self.is_reopen = False
 
     def build(self):
         def pick_files_result(e: ft.FilePickerResultEvent):
@@ -53,15 +54,40 @@ class SelectFile(ft.UserControl):
                 path_field.value = e.files[0].path
                 path_field.update()
 
+        def close_modal(e):
+            self.is_reopen = True
+            confirm_modal.open = False
+            self.page.update()
+
+        confirm_modal = ft.AlertDialog(
+            modal=True,
+            title=ft.Text("Work in progress."),
+            content=ft.Text("Do you still want to open a new PDF file?"),
+            actions=[
+                ft.TextButton("Yes", on_click=close_modal),
+                ft.TextButton("No", on_click=lambda x: x.page.close_dialog()),
+            ],
+            actions_alignment=ft.MainAxisAlignment.END,
+        )
+
         def open_pdf(e):
             load_path = path_field.value
             if load_path != "" and self.pdf_path != load_path:
-                self.pdf_path = load_path
                 if self.master.cropping_frame is not None:
-                    self.page.controls.pop()
+                    self.page.dialog = confirm_modal
+                    confirm_modal.open = True
+                    self.page.update()
+                    while confirm_modal.open:
+                        pass
+                    if self.is_reopen:
+                        self.is_reopen = False
+                        self.page.controls.pop()
+                    else:
+                        return
                 else:
                     self.master.page.window_height = param.WINDOW_HEIGHT_EXPAND
                     self.master.page.window_min_height = param.MIN_WINDOW_HEIGHT
+                self.pdf_path = load_path
                 self.master.cropping_frame = ImageCanvas(self, self.pdf_path)
                 self.page.add(self.master.cropping_frame)
                 self.update()
