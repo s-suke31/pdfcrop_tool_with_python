@@ -61,8 +61,8 @@ class SelectFile(ft.UserControl):
 
         confirm_modal = ft.AlertDialog(
             modal=True,
-            title=ft.Text("Please confirm."),
-            content=ft.Text("Do you open new file?"),
+            title=ft.Text("Work in progress."),
+            content=ft.Text("Do you still want to open a new PDF file?"),
             actions=[
                 ft.TextButton("Yes", on_click=close_modal),
                 ft.TextButton("No", on_click=lambda x: x.page.close_dialog()),
