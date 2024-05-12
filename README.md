@@ -12,5 +12,5 @@ Please install the following by pip.
 -->
 
 ## TODO
-* Confirmation dialog when "Open" button is pressed while working with PDF
+* ~~Confirmation dialog when "Open" button is pressed while working with PDF~~ Done
 * ~~Abolish pypdf (implement only with PyMuPDF)~~ Done
