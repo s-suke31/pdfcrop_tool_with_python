@@ -42,8 +42,25 @@ class PDFCropper():
         y1 = y0 + (coords[3] - coords[1])
         crop_page.set_cropbox(fitz.Rect(x0, y0, x1, y1))
 
+    def pdfcrop(self):
+        for page in range(self.input_pdf.page_count):
+            self.output_pdf.insert_pdf(self.input_pdf, page, page)
+            crop_page = self.output_pdf[-1]
+            min_x0 = crop_page.cropbox.x1
+            min_y0 = crop_page.cropbox.y1
+            max_x1 = 0
+            max_y1 = 0
+            for block in crop_page.get_text('dict')['blocks']:
+                box = block["bbox"]
+                min_x0 = min(min_x0, box[0])
+                min_y0 = min(min_y0, box[1])
+                max_x1 = max(max_x1, box[2])
+                max_y1 = max(max_y1, box[3])
+            crop_page.set_cropbox(fitz.Rect(min_x0, min_y0, max_x1, max_y1))
+        self.save_pdf()
+
     def notcrop(self, npage):
         pass
 
     def save_pdf(self):
-        self.output_pdf.save(self.output_path)
+        self.output_pdf.save(self.output_path, 4, True, True)
